@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flozacode", "Flozacode\Flozacode.csproj", "{86965209-2E79-474B-B297-F59E5CAABA2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flozacode.UnitTest", "Flozacode.UnitTest\Flozacode.UnitTest.csproj", "{B0DFF1D8-EFB9-4245-8969-938A3034BE68}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86965209-2E79-474B-B297-F59E5CAABA2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86965209-2E79-474B-B297-F59E5CAABA2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86965209-2E79-474B-B297-F59E5CAABA2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86965209-2E79-474B-B297-F59E5CAABA2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0DFF1D8-EFB9-4245-8969-938A3034BE68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0DFF1D8-EFB9-4245-8969-938A3034BE68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0DFF1D8-EFB9-4245-8969-938A3034BE68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0DFF1D8-EFB9-4245-8969-938A3034BE68}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A059A747-64F1-44F3-822D-C41EF19DA631}
+	EndGlobalSection
+EndGlobal
