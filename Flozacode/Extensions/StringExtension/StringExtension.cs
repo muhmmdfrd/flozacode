@@ -7,6 +7,8 @@ namespace Flozacode.Extensions.StringExtension
 {
     public static class StringExtension
     {
+        private const string EncryptKey = "2BAE2C2C-4AC7-4C53-A98B-0C993E7BDD85";
+
         /// <summary>
         /// return true or throw new Exception
         /// </summary>
@@ -30,6 +32,24 @@ namespace Flozacode.Extensions.StringExtension
         public static byte[] GetBytes(this string text)
         {
             return Encoding.UTF8.GetBytes(text);
+        }
+
+        /// <summary>
+        /// Return string from bytes[]
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static byte[] GetStringToBytes(this string value)
+        {
+            int NumberChars = value.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+
+            for (int i = 0; i < NumberChars; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(value.Substring(i, 2), 16);
+            }
+
+            return bytes;
         }
 
         /// <summary>
@@ -210,13 +230,13 @@ namespace Flozacode.Extensions.StringExtension
         /// <param name="text"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string Encrypt(this string text, string key)
+        public static string Encrypt(this string text, string key, EncryptType encryptType = EncryptType.Base64)
         {
             text.ThrowIfNull(new ArgumentNullException(nameof(text)));
             key.ThrowIfNull(new ArgumentNullException(nameof(key)));
 
             byte[] buffer = Encoding.ASCII.GetBytes(key);
-            Rfc2898DeriveBytes guidKey = new("560A18CD-6346-4CF0-A2E8-671F9B6B9EA8", buffer);
+            Rfc2898DeriveBytes guidKey = new(EncryptKey, buffer);
 
             using Aes aes = Aes.Create();
 
@@ -232,13 +252,62 @@ namespace Flozacode.Extensions.StringExtension
             }
 
             byte[] iv = aes.IV;
-            byte[] decrypted = memoryStream.ToArray();
-            byte[] result = new byte[iv.Length + decrypted.Length];
+            byte[] encrypted = memoryStream.ToArray();
+            byte[] result = new byte[iv.Length + encrypted.Length];
 
             Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
-            Buffer.BlockCopy(decrypted, 0, result, iv.Length, decrypted.Length);
+            Buffer.BlockCopy(encrypted, 0, result, iv.Length, encrypted.Length);
 
-            return Convert.ToBase64String(result);
+            if (encryptType == EncryptType.Base64)
+            {
+                return Convert.ToBase64String(result);
+            }
+
+            return BitConverter.ToString(result).Replace("-", string.Empty);
+        }
+
+
+        /// <summary>
+        /// Encrypt string using Aes and custom key
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="key"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public static string Encrypt(this string text, string key, string guid, EncryptType encryptType = EncryptType.Base64)
+        {
+            text.ThrowIfNull(new ArgumentNullException(nameof(text)));
+            key.ThrowIfNull(new ArgumentNullException(nameof(key)));
+
+            byte[] buffer = Encoding.ASCII.GetBytes(key);
+            Rfc2898DeriveBytes guidKey = new(guid, buffer);
+
+            using Aes aes = Aes.Create();
+
+            aes.Key = guidKey.GetBytes(aes.KeySize / 8);
+            aes.IV = guidKey.GetBytes(aes.BlockSize / 8);
+
+            using ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+            using MemoryStream memoryStream = new();
+            using (CryptoStream cryptoStream = new(memoryStream, encryptor, CryptoStreamMode.Write))
+            using (StreamWriter streamWriter = new(cryptoStream))
+            {
+                streamWriter.Write(text);
+            }
+
+            byte[] iv = aes.IV;
+            byte[] encrypted = memoryStream.ToArray();
+            byte[] result = new byte[iv.Length + encrypted.Length];
+
+            Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
+            Buffer.BlockCopy(encrypted, 0, result, iv.Length, encrypted.Length);
+
+            if (encryptType == EncryptType.Base64)
+            {
+                return Convert.ToBase64String(result);
+            }
+
+            return BitConverter.ToString(result).Replace("-", string.Empty);
         }
 
         /// <summary>
@@ -247,12 +316,15 @@ namespace Flozacode.Extensions.StringExtension
         /// <param name="text"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string Decrypt(this string text, string key)
+        public static string Decrypt(this string text, string key, EncryptType encryptType = EncryptType.Base64)
         {
             text.ThrowIfNull(new ArgumentNullException(nameof(text)));
             key.ThrowIfNull(new ArgumentNullException(nameof(key)));
 
-            byte[] fullCipher = Convert.FromBase64String(text);
+            byte[] fullCipher = encryptType == EncryptType.Base64 ?
+                Convert.FromBase64String(text):
+                text.GetStringToBytes();
+            
             byte[] iv = new byte[16];
             byte[] cipher = new byte[16];
 
@@ -260,7 +332,50 @@ namespace Flozacode.Extensions.StringExtension
             Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, iv.Length);
 
             byte[] buffer = Encoding.ASCII.GetBytes(key);
-            Rfc2898DeriveBytes guidKey = new("560A18CD-6346-4CF0-A2E8-671F9B6B9EA8", buffer);
+            Rfc2898DeriveBytes guidKey = new(EncryptKey, buffer);
+
+            using Aes aes = Aes.Create();
+
+            aes.Key = guidKey.GetBytes(aes.KeySize / 8);
+            aes.IV = guidKey.GetBytes(aes.BlockSize / 8);
+
+            using ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+            string result;
+            using (MemoryStream memoryStream = new(cipher))
+            {
+                using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
+                using StreamReader stream = new(cryptoStream);
+                result = stream.ReadToEnd();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Decrypt encrypted string with Aes and custom key
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="key"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public static string Decrypt(this string text, string key, string guid, EncryptType encryptType = EncryptType.Base64)
+        {
+            text.ThrowIfNull(new ArgumentNullException(nameof(text)));
+            key.ThrowIfNull(new ArgumentNullException(nameof(key)));
+
+            byte[] fullCipher = encryptType == EncryptType.Base64 ?
+                Convert.FromBase64String(text) :
+                text.GetStringToBytes();
+
+            byte[] iv = new byte[16];
+            byte[] cipher = new byte[16];
+
+            Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
+            Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, iv.Length);
+
+            byte[] buffer = Encoding.ASCII.GetBytes(key);
+            Rfc2898DeriveBytes guidKey = new(guid, buffer);
 
             using Aes aes = Aes.Create();
 
