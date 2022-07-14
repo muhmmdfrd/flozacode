@@ -276,5 +276,15 @@ namespace Flozacode.Extensions.ExpressionExtension
 
 			return mapper.Map<TDestination>(result);
 		}
+
+		public static bool HasProperty(this object obj, string propertyName)
+        {
+			return obj.GetType().GetProperty(propertyName) != null;
+        }
+
+		public static bool HasPropertyAndIntanceOf<T>(this object obj, string propertyName)
+        {
+			return obj.HasProperty(propertyName) && obj.GetType() == typeof(T);
+        }
 	}
 }
