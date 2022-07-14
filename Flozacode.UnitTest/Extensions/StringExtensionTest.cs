@@ -98,14 +98,13 @@ namespace Flozacode.UnitTest.Extensions
         [TestMethod]
         public void EncryptDecryptTest()
         {
-            var text = "hello world!";
-            var key = FlozaString.GenerateRandomString(4);
+            var text = "Muhammad Farid";
+            var key = FlozaString.GenerateRandomString(6);
             var encrypted = text.Encrypt(key);
-
-            Console.WriteLine("Encrypted: " + encrypted);
-
             var decrypted = encrypted.Decrypt(key);
 
+            Console.WriteLine("key: " + key);
+            Console.WriteLine("Encrypted: " + encrypted);
             Console.WriteLine("Decrypted: " + decrypted);
 
             Assert.IsTrue(decrypted == text);
