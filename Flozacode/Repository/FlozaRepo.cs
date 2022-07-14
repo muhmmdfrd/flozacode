@@ -3,12 +3,13 @@ using AutoMapper.QueryableExtensions;
 using Flozacode.Exceptions;
 using Flozacode.Extensions.ExpressionExtension;
 using Flozacode.Extensions.StringExtension;
+using Flozacode.Models;
 using Flozacode.Models.Constants;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flozacode.Repository
 {
-    public class FlozaRepo<T, TData> : IFlozaRepo<T, TData> where TData : DbContext where T : class
+    public class FlozaRepo<T, TData> : IFlozaRepo<T, TData> where TData : Dbs where T : class
     {
         private readonly TData _db;
         private readonly IMapper _mapper;
@@ -30,7 +31,7 @@ namespace Flozacode.Repository
 
             if (saveChanges)
             {
-                int result = await _db.SaveChangesAsync();
+                int result = await SaveChangesAsync();
 
                 if (result == 0)
                 {
@@ -49,7 +50,7 @@ namespace Flozacode.Repository
 
             if (saveChanges)
             {
-                int result = await _db.SaveChangesAsync();
+                int result = await SaveChangesAsync();
 
                 if (result == 0)
                 {
@@ -68,7 +69,7 @@ namespace Flozacode.Repository
 
             if (saveChanges)
             {
-                int result = await _db.SaveChangesAsync();
+                int result = await SaveChangesAsync();
 
                 if (result == 0)
                 {
@@ -165,7 +166,7 @@ namespace Flozacode.Repository
 
             if (saveChanges)
             {
-                int result = await _db.SaveChangesAsync();
+                int result = await SaveChangesAsync();
 
                 if (result == 0)
                 {
@@ -184,7 +185,7 @@ namespace Flozacode.Repository
 
             if (saveChanges)
             {
-                int result = await _db.SaveChangesAsync();
+                int result = await SaveChangesAsync();
 
                 if (result == 0)
                 {
@@ -206,7 +207,7 @@ namespace Flozacode.Repository
 
             if (saveChanges)
             {
-                int result = await _db.SaveChangesAsync();
+                int result = await SaveChangesAsync();
 
                 if (result == 0)
                 {

@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Flozacode.Models;
 
 namespace Flozacode.Repository
 {
-    public interface IFlozaRepo<T, TData> where TData : DbContext where T : class
+    public interface IFlozaRepo<T, TData> where TData : Dbs where T : class
     {
         Task<T> GetByIdAsync<TIdType>(TIdType id);
         Task<IReadOnlyList<T>> GetAllAsync();
