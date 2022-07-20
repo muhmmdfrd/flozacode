@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Muhammad Farid</Authors>
     <Company>Muhammad Farid</Company>
-    <Version>1.0.1.9</Version>
+    <Version>1.0.1.10</Version>
     <Description>Floza is an acronym from Indonesian (flow aja in code) where this very powerful library can streamline code and make code semantic and easy to read.</Description>
   </PropertyGroup>
 
