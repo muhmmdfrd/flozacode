@@ -394,5 +394,16 @@ namespace Flozacode.Extensions.StringExtension
 
             return result;
         }
+
+        /// <summary>
+        /// Remove all spaces in text
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string RemoveSpace(this string text)
+        {
+            text.ThrowIfNull(new ArgumentNullException(nameof(text)));
+            return Regex.Replace(text, @"\s+", string.Empty);
+        }
     }
 }
