@@ -35,6 +35,24 @@ namespace Flozacode.Helpers.FileHelper
         /// <param name="fileName"></param>
         /// <exception cref="DirectoryNotFoundException"></exception>
         /// <exception cref="FileNotFoundException"></exception>
+        public static void DeleteImage(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"File {path} not found.");
+            }
+
+            File.Delete(path);
+        }
+
+        /// <summary>
+        /// Delete image from server
+        /// </summary>
+        /// <param name="webRootPath"></param>
+        /// <param name="targetFolder"></param>
+        /// <param name="fileName"></param>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
         public static void DeleteImage(string webRootPath, string targetFolder, string fileName)
         {
             var path = Path.Combine(webRootPath, targetFolder);
