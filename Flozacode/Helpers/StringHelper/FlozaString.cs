@@ -37,5 +37,25 @@ namespace Flozacode.Helpers.StringHelper
                 return Convert.ToBase64String(randomNumber);
             }
         }
+
+        /// <summary>
+        /// Return random string of number. Usually for OTP
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string GenerateRandomNumberString(int length = 5)
+        {
+            string otp = string.Empty;
+            Random random = new();
+            string[] characters = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
+
+            for (int i = 0; i < length; i++) // change length of OTP here
+            {
+                int selectedIndex = random.Next(0, characters.Length);
+                otp += characters[selectedIndex];
+            }
+
+            return otp;
+        }
     }
 }
