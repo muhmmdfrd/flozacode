@@ -55,6 +55,24 @@ namespace Flozacode.Extensions.ExpressionExtension
 			return result;
 		}
 
+		public static T FindOrThrow<T>(this IQueryable<T> source, object id, Exception exception)
+        {
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var expression = CreateExpression<T, object>("Equals", "id", id);
+			var result = source.FirstOrDefault(expression);
+
+			if (result == null)
+			{
+				throw exception;
+			}
+
+			return result;
+		}
+
 		public static TDestination FindOrThrow<TSource, TDestination>(this IQueryable<TSource> source, object id, string errorMessage = "")
 		{
 			if (source == null)
@@ -72,6 +90,27 @@ namespace Flozacode.Extensions.ExpressionExtension
 					errorMessage;
 
 				throw new RecordNotFoundException(errorMessage);
+			}
+
+			var configMapper = new MapperConfiguration(x => x.CreateMap<TSource, TDestination>());
+			var mapper = configMapper.CreateMapper();
+
+			return mapper.Map<TDestination>(result);
+		}
+
+		public static TDestination FindOrThrow<TSource, TDestination>(this IQueryable<TSource> source, object id, Exception exception)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var expression = CreateExpression<TSource, object>("Equals", "id", id);
+			var result = source.FirstOrDefault(expression);
+
+			if (result == null)
+			{
+				throw exception;
 			}
 
 			var configMapper = new MapperConfiguration(x => x.CreateMap<TSource, TDestination>());
@@ -102,6 +141,24 @@ namespace Flozacode.Extensions.ExpressionExtension
 			return result;
 		}
 
+		public static async Task<T> FindOrThrowAsync<T>(this IQueryable<T> source, object id, Exception exception)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var expression = CreateExpression<T, object>("Equals", "id", id);
+			var result = await source.FirstOrDefaultAsync(expression);
+
+			if (result == null)
+			{
+				throw exception;
+			}
+
+			return result;
+		}
+
 		public static async Task<TDestination> FindOrThrowAsync<TSource, TDestination>(this IQueryable<TSource> source, object id, string errorMessage = "")
 		{
 			if (source == null)
@@ -119,6 +176,27 @@ namespace Flozacode.Extensions.ExpressionExtension
 					errorMessage;
 
 				throw new RecordNotFoundException(errorMessage);
+			}
+
+			var configMapper = new MapperConfiguration(x => x.CreateMap<TSource, TDestination>());
+			var mapper = configMapper.CreateMapper();
+
+			return mapper.Map<TDestination>(result);
+		}
+
+		public static async Task<TDestination> FindOrThrowAsync<TSource, TDestination>(this IQueryable<TSource> source, object id, Exception exception)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var expression = CreateExpression<TSource, object>("Equals", "id", id);
+			var result = await source.FirstOrDefaultAsync(expression);
+
+			if (result == null)
+			{
+				throw exception;
 			}
 
 			var configMapper = new MapperConfiguration(x => x.CreateMap<TSource, TDestination>());
@@ -149,6 +227,24 @@ namespace Flozacode.Extensions.ExpressionExtension
 			return result;
 		}
 
+		public static IQueryable<T> WhereOrThrow<T>(this IQueryable<T> source, string propertyName, object value, Exception exception)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var expression = CreateExpression<T, object>("Equals", propertyName, value);
+			var result = source.Where(expression);
+
+			if (!result.Any())
+			{
+				throw exception;
+			}
+
+			return result;
+		}
+
 		public static IQueryable<T> WhereOrThrow<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate, string errorMessage = "")
 		{
 			if (source == null)
@@ -163,6 +259,23 @@ namespace Flozacode.Extensions.ExpressionExtension
 				errorMessage = errorMessage.Equals(string.Empty) ? "Data not found." : errorMessage;
 
 				throw new RecordNotFoundException(errorMessage);
+			}
+
+			return result;
+		}
+
+		public static IQueryable<T> WhereOrThrow<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate, Exception exception)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var result = source.Where(predicate);
+
+			if (!result.Any())
+			{
+				throw exception;
 			}
 
 			return result;
@@ -187,6 +300,23 @@ namespace Flozacode.Extensions.ExpressionExtension
 			return await Task.Run(() => result);
 		}
 
+		public static async Task<IQueryable<T>> WhereOrThrowAsync<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate, Exception exception)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var result = source.Where(predicate);
+
+			if (!result.Any())
+			{
+				throw exception;
+			}
+
+			return await Task.Run(() => result);
+		}
+
 		public static T FirstOrThrow<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate, string errorMessage = "")
 		{
 			if (source == null)
@@ -201,6 +331,23 @@ namespace Flozacode.Extensions.ExpressionExtension
 				errorMessage = errorMessage.Equals(string.Empty) ? "Data not found." : errorMessage;
 
 				throw new RecordNotFoundException(errorMessage);
+			}
+
+			return result;
+		}
+
+		public static T FirstOrThrow<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate, Exception exception)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Canot accept nullable value.", nameof(source));
+			}
+
+			var result = source.FirstOrDefault(predicate);
+
+			if (result == null)
+			{
+				throw exception;
 			}
 
 			return result;
@@ -232,6 +379,30 @@ namespace Flozacode.Extensions.ExpressionExtension
 			return mapper.Map<TDestination>(result);
 		}
 
+		public static TDestination FirstOrThrow<TSource, TDestination>(
+			this IQueryable<TSource> source,
+			Expression<Func<TSource, bool>> predicate,
+			Exception exception
+		)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Canot accept nullable value.", nameof(source));
+			}
+
+			var result = source.FirstOrDefault(predicate);
+
+			if (result == null)
+			{
+				throw exception;
+			}
+
+			var configMapper = new MapperConfiguration(x => x.CreateMap<TSource, TDestination>());
+			var mapper = configMapper.CreateMapper();
+
+			return mapper.Map<TDestination>(result);
+		}
+
 		public static async Task<T> FirstOrThrowAsync<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate, string errorMessage = "")
 		{
 			if (source == null)
@@ -246,6 +417,23 @@ namespace Flozacode.Extensions.ExpressionExtension
 				errorMessage = errorMessage.Equals(string.Empty) ? "Data not found." : errorMessage;
 
 				throw new RecordNotFoundException(errorMessage);
+			}
+
+			return result;
+		}
+
+		public static async Task<T> FirstOrThrowAsync<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate, Exception exception)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var result = await source.FirstOrDefaultAsync(predicate);
+
+			if (result == null)
+			{
+				throw exception;
 			}
 
 			return result;
@@ -269,6 +457,30 @@ namespace Flozacode.Extensions.ExpressionExtension
 				errorMessage = errorMessage.Equals(string.Empty) ? "Data not found." : errorMessage;
 
 				throw new RecordNotFoundException(errorMessage);
+			}
+
+			var configMapper = new MapperConfiguration(x => x.CreateMap<TSource, TDestination>());
+			var mapper = configMapper.CreateMapper();
+
+			return mapper.Map<TDestination>(result);
+		}
+
+		public static async Task<TDestination> FirstOrThrowAsync<TSource, TDestination>(
+			this IQueryable<TSource> source,
+			Expression<Func<TSource, bool>> predicate,
+			Exception exception
+		)
+		{
+			if (source == null)
+			{
+				throw new ArgumentException("Cannot accept nullable value.", nameof(source));
+			}
+
+			var result = await source.FirstOrDefaultAsync(predicate);
+
+			if (result == null)
+			{
+				throw exception;
 			}
 
 			var configMapper = new MapperConfiguration(x => x.CreateMap<TSource, TDestination>());
