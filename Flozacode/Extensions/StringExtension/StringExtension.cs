@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Flozacode.Extensions.NumberExtension;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -404,6 +405,74 @@ namespace Flozacode.Extensions.StringExtension
         {
             text.ThrowIfNull(new ArgumentNullException(nameof(text)));
             return Regex.Replace(text, @"\s+", string.Empty);
+        }
+
+        /// <summary>
+        /// Convert int to roman letters
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string ToRoman(this object text)
+        {
+            int number = text.ToInt();
+
+            string[] romanLetters = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+            int[] numbers = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+
+            int i = 0;
+
+            string result = string.Empty;
+
+            while (number != 0)
+            {
+                if (number >= numbers[i])
+                {
+                    number -= numbers[i];
+                    result += romanLetters[i];
+                    continue;
+                }
+
+                i++;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Convert Roman letters to int.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static int RomanToNumber(this string text)
+        {
+            int result = 0;
+
+            Dictionary<char, int> romanNumbers = new()
+            {
+                { 'I', 1 },
+                { 'V', 5 },
+                { 'X', 10 },
+                { 'L', 50 },
+                { 'C', 100 },
+                { 'D', 500 },
+                { 'M', 1000 },
+            };
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                char currentRomanChar = text[i];
+                romanNumbers.TryGetValue(currentRomanChar, out int num);
+
+                if (i + 1 < text.Length && romanNumbers[text[i + 1]] > romanNumbers[currentRomanChar])
+                {
+                    result -= num;
+                    continue;
+                }
+
+                result += num;    
+            }
+
+            return result;
         }
     }
 }
