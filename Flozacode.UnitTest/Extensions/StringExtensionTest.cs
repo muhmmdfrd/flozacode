@@ -109,5 +109,22 @@ namespace Flozacode.UnitTest.Extensions
 
             Assert.IsTrue(decrypted == text);
         }
+
+        [TestMethod]
+        public void ConvertToRoman()
+        {
+            var number = 1996;
+            Console.WriteLine("Numbers: " + number);
+
+
+            var result = number.ToRoman();
+            Console.WriteLine("Result: " + result);
+
+            var roman = "MCMXCVI".RomanToNumber();
+            Console.WriteLine("Converted number: " + roman);
+
+            Assert.AreEqual("MCMXCVI", result);
+            Assert.AreEqual(roman, number);
+        }
     }
 }
