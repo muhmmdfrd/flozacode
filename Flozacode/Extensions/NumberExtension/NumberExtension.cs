@@ -1,4 +1,7 @@
-﻿namespace Flozacode.Extensions.NumberExtension
+﻿using System.Security.Cryptography;
+using HashidsNet;
+
+namespace Flozacode.Extensions.NumberExtension
 {
     public static class NumberExtension
     {
@@ -105,6 +108,32 @@
 
             throw new InvalidOperationException("Object failed to parse to Float.");
 
+        }
+
+        public static string ToHashCode(this int number)
+        {
+            const string key = "2BAE2C2C-4AC7-4C53-A98B-0C993E7BDD85";
+            var hashids = new Hashids(key);
+            return hashids.Encode(number);
+        }
+
+        public static string ToHashCode(this int number, int minLength)
+        {
+            const string key = "2BAE2C2C-4AC7-4C53-A98B-0C993E7BDD85";
+            var hashids = new Hashids(key, minLength);
+            return hashids.Encode(number);
+        }
+
+        public static string ToHashCode(this int number, string key)
+        {
+            var hashids = new Hashids(key);
+            return hashids.Encode(number);
+        }
+
+        public static string ToHashCode(this int number, string key, int minLength)
+        {
+            var hashids = new Hashids(key);
+            return hashids.Encode(number);
         }
     }
 }
