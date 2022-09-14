@@ -9,6 +9,7 @@
     <Company>Muhammad Farid</Company>
     <Version>1.0.1.14</Version>
     <Description>Floza is an acronym from Indonesian (flow aja in code) where this very powerful library can streamline code and make code semantic and easy to read.</Description>
+    <PackageVersion>1.0.1.15</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
